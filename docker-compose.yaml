@@ -1,0 +1,101 @@
+﻿version: '3.8'
+
+services:
+
+  mysql-master:
+    image: mysql:8.0
+    container_name: mysql-master
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "admin_123"
+      MYSQL_DATABASE: "libreria"
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./mysql-master/custom.cnf:/etc/mysql/conf.d/custom.cnf
+      - mysql_master_data:/var/lib/mysql
+    networks:
+      - appnet
+
+  mysql-master2:
+    image: mysql:8.0
+    container_name: mysql-master2
+    environment:
+      MYSQL_ROOT_PASSWORD: "admin_123"
+      MYSQL_DATABASE: "libreria"
+    ports:
+      - "3308:3306"
+    restart: always
+    volumes:
+      - ./mysql-master2/custom.cnf:/etc/mysql/conf.d/custom.cnf
+      - mysql_master2_data:/var/lib/mysql
+    networks:
+      - appnet
+
+  mysqlslave:
+    image: mysql:8.0
+    container_name: mysqlslave
+    environment:
+      MYSQL_ROOT_PASSWORD: "admin_123"
+      MYSQL_DATABASE: "libreria"
+    ports:
+      - "3307:3306"
+    restart: always
+    volumes:
+      - ./mysql-slave/custom.cnf:/etc/mysql/conf.d/custom.cnf
+      - mysqlslave_data:/var/lib/mysql
+    networks:
+      - appnet
+
+  uttt-micro-service1:
+    build: .
+    container_name: uttt-micro-service1
+    ports:
+      - "5001:5000"
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__MasterConnection=server=mysql-master;port=3306;database=libreria;user=root;password=admin_123
+      - ConnectionStrings__SlaveConnection=server=mysqlslave;port=3306;database=libreria;user=root;password=admin_123
+    depends_on:
+      - mysql-master
+      - mysqlslave 
+    networks:
+      - appnet
+
+  uttt-micro-service2:
+    build: .
+    container_name: uttt-micro-service2
+    ports:
+      - "5002:5000"
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__MasterConnection=server=mysql-master2;port=3306;database=libreria;user=root;password=admin_123
+      - ConnectionStrings__SlaveConnection=server=mysqlslave;port=3306;database=libreria;user=root;password=admin_123
+    depends_on:
+      - mysql-master2
+      - mysqlslave
+    networks:
+      - appnet
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - uttt-micro-service1
+      - uttt-micro-service2
+    networks:
+      - appnet
+
+volumes:
+  mysqlslave_data:
+  mysql_master_data:
+  mysql_master2_data:
+
+
+networks:
+  appnet:
+    driver: bridge
