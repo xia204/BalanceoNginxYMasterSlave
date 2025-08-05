@@ -14,6 +14,7 @@ namespace Uttt.Micro.Libro.Aplication
     {
         public class Ejecuta : IRequest<List<LibroMaterialDto>>
         {
+            //Posible error eliminar si no funciona
             public Ejecuta()
             {
 

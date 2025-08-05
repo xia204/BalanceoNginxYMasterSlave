@@ -6,38 +6,29 @@ using Uttt.Micro.Libro.Persistencia;
 
 namespace Uttt.Micro.Libro.Extensiones
 {
+
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCustomServices(this IServiceCollection services, IConfiguration configuration)
+
+        public static IServiceCollection AddCustomServices(this IServiceCollection services, IConfiguration configuration, string writeConnection, string readConnection)
         {
             services.AddControllers()
-                .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Nuevo>());
+               .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Nuevo>());
 
-            //Descomentar para ejecutar las migraciones 
-            /*services.AddDbContext<ContextoLibreria>(options =>
-            {
-                options.UseMySQL(configuration.GetConnectionString("DefaultConnection"));
-            });*/
-
-            //Comentar estos dos servicios y eliminar u omitir el archivo ContextoLibreriaReadOnly
             services.AddDbContext<ContextoLibreria>(options =>
             {
-                options.UseMySQL(configuration.GetConnectionString("DefaultConnection"));
-                Console.WriteLine(configuration.GetConnectionString("DefaultConnection"));
+                options.UseMySql(writeConnection, ServerVersion.AutoDetect(writeConnection));
             });
 
             services.AddDbContext<ContextoLibreriaReadOnly>(options =>
             {
-                options.UseMySQL(configuration.GetConnectionString("SlaveConnection"));
-                Console.WriteLine(configuration.GetConnectionString("SlaveConnection"));
-
+                options.UseMySql(readConnection, ServerVersion.AutoDetect(readConnection));
             });
-
 
             services.AddMediatR(typeof(Nuevo.Manejador).Assembly);
             services.AddAutoMapper(typeof(Consulta.Manejador));
-
             return services;
         }
     }
 }
+

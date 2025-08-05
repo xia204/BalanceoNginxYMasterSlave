@@ -16,7 +16,7 @@ namespace Uttt.Micro.Libro.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Uttt.Micro.Libro.Modelo.LibreriaMaterial", b =>

@@ -11,4 +11,3 @@ namespace Uttt.Micro.Libro.Aplication
         }
     }
 }
-//C:\Users\vazqu\source\repos\MicroservicioLibroNginx\Aplication\

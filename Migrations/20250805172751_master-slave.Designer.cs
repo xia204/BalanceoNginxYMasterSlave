@@ -11,15 +11,15 @@ using Uttt.Micro.Libro.Persistencia;
 namespace Uttt.Micro.Libro.Migrations
 {
     [DbContext(typeof(ContextoLibreria))]
-    [Migration("20250801004816_master_v1")]
-    partial class master_v1
+    [Migration("20250805172751_master-slave")]
+    partial class masterslave
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Uttt.Micro.Libro.Modelo.LibreriaMaterial", b =>

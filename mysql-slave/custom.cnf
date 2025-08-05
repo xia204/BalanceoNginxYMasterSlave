@@ -5,5 +5,5 @@ relay-log=mysql-relay-bin
 
 # Permitir múltiples fuentes (multi-source replication)
 log_slave_updates=ON
-read_only=ON
-super_read_only=ON
+#read_only=ON
+#super_read_only=ON

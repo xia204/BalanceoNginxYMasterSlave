@@ -6,9 +6,10 @@ using Uttt.Micro.Libro.Persistencia;
 
 //Descomentar solo para hacer las migraciones
 //Es el codigo original
-
+/*
 namespace Uttt.Micro.Libro.Aplication
 {
+    
     public class ConsultaFiltro
     {
         public class LibroUnico : IRequest<LibroMaterialDto>
@@ -39,12 +40,12 @@ namespace Uttt.Micro.Libro.Aplication
             }
         }
     }
-}
+}*/
 
 
 //Código para busquedas en la base local y en la central
-/*
-namespace Uttt.Micro.Libro.Aplicacion
+
+namespace Uttt.Micro.Libro.Aplication
 {
     public class ConsultaFiltro
     {
@@ -98,4 +99,3 @@ namespace Uttt.Micro.Libro.Aplicacion
         }
     }
 }
-*/
