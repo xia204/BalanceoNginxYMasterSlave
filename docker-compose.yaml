@@ -55,7 +55,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:5000
       - ConnectionStrings__MasterConnection=server=mysql-master;port=3306;database=libreria;user=root;password=admin_123
-      - ConnectionStrings__SlaveConnection=server=mysqlslave;port=3306;database=libreria;user=root;password=admin_123
+      - ConnectionStrings__SlaveConnection=server=mysql-master2;port=3306;database=libreria;user=root;password=admin_123
     depends_on:
       - mysql-master
       - mysqlslave 
@@ -70,7 +70,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:5000
       - ConnectionStrings__MasterConnection=server=mysql-master2;port=3306;database=libreria;user=root;password=admin_123
-      - ConnectionStrings__SlaveConnection=server=mysqlslave;port=3306;database=libreria;user=root;password=admin_123
+      - ConnectionStrings__SlaveConnection=server=mysql-master;port=3306;database=libreria;user=root;password=admin_123
     depends_on:
       - mysql-master2
       - mysqlslave

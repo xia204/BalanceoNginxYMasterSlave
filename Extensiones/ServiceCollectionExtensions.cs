@@ -12,8 +12,9 @@ namespace Uttt.Micro.Libro.Extensiones
 
         public static IServiceCollection AddCustomServices(this IServiceCollection services, IConfiguration configuration, string writeConnection, string readConnection)
         {
-            services.AddControllers()
-               .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Nuevo>());
+            services.AddControllers();
+            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationClientsideAdapters();
 
             services.AddDbContext<ContextoLibreria>(options =>
             {

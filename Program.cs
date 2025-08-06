@@ -4,11 +4,11 @@ using Uttt.Micro.Libro.Persistencia;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Corrección: Usa GetConnectionString para obtener las cadenas de conexión
+// Correcciï¿½n: Usa GetConnectionString para obtener las cadenas de conexiï¿½n
 var writeConnection = builder.Configuration.GetConnectionString("MasterConnection");
 var readConnection = builder.Configuration.GetConnectionString("SlaveConnection");
 
-// Validación opcional
+// Validaciï¿½n opcional
 if (string.IsNullOrEmpty(writeConnection))
     throw new InvalidOperationException("MasterConnection string is missing or null");
 if (string.IsNullOrEmpty(readConnection))
@@ -39,12 +39,14 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Habilitar Swagger en todos los entornos para Docker
+app.MapOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");

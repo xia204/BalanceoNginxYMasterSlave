@@ -6,7 +6,7 @@ namespace Uttt.Micro.Libro.Modelo
     {
         [Key]
         public Guid LibreriaMateriaId { get; set; }
-        public string Titulo { get; set; }
+        public string Titulo { get; set; } = string.Empty;
         public DateTime? FechaPublicacion { get; set; }
         public Guid? AutorLibro { get; set; }
         public int NewData { get; set; }

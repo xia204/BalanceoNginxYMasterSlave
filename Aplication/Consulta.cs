@@ -5,16 +5,12 @@ using Uttt.Micro.Libro.Modelo;
 using Uttt.Micro.Libro.Persistencia;
 
 
-//Descomentar solo para hacer las migraciones
-//Es el codigo original
-
 namespace Uttt.Micro.Libro.Aplication
 {
     public class Consulta
     {
         public class Ejecuta : IRequest<List<LibroMaterialDto>>
         {
-            //Posible error eliminar si no funciona
             public Ejecuta()
             {
 
@@ -22,21 +18,37 @@ namespace Uttt.Micro.Libro.Aplication
         }
         public class Manejador : IRequestHandler<Ejecuta, List<LibroMaterialDto>>
         {
-
             private readonly ContextoLibreria _contexto;
+            private readonly ContextoLibreriaReadOnly _slaveContext;
             private readonly IMapper _mapper;
 
-            public Manejador(ContextoLibreria contexto, IMapper mapper)
+            public Manejador(ContextoLibreria contexto, ContextoLibreriaReadOnly slaveContext, IMapper mapper)
             {
-                _mapper = mapper;
                 _contexto = contexto;
+                _slaveContext = slaveContext;
+                _mapper = mapper;
             }
 
             public async Task<List<LibroMaterialDto>> Handle(Ejecuta request, CancellationToken cancellationToken)
             {
-                var libros = await _contexto.LibreriasMateriales.ToListAsync();
-                var librosDto = _mapper.Map<List<LibreriaMaterial>, List<LibroMaterialDto>>(libros);
-                return librosDto;
+                // 1. Consultar en base local (master)
+                var librosMaster = await _contexto.LibreriasMateriales.ToListAsync();
+
+                // 2. Consultar en base slave
+                var librosSlave = await _slaveContext.LibreriasMateriales.ToListAsync();
+
+                // 3. Combinar resultados de ambas bases de datos
+                var todosLosLibros = new List<LibreriaMaterial>();
+                todosLosLibros.AddRange(librosMaster);
+                todosLosLibros.AddRange(librosSlave);
+
+                // 4. Eliminar duplicados por ID
+                var librosUnicos = todosLosLibros
+                    .GroupBy(x => x.LibreriaMateriaId)
+                    .Select(g => g.First())
+                    .ToList();
+
+                return _mapper.Map<List<LibroMaterialDto>>(librosUnicos);
             }
         }
     }
